@@ -4,7 +4,7 @@
 
 [![cloro](https://img.shields.io/badge/Powered%20by-Cloro-blue?style=for-the-badge)](https://cloro.dev/)
 
-The [AI Overview Scraper](https://cloro.dev/aiooverview/) by cloro enables developers to programmatically interact with Google's AI Overview and automatically collect comprehensive search result analysis and AI-curated insights along with structured metadata. Instead of manual data collection, you can retrieve results as parsed JSON, raw HTML, or other formats for seamless integration into your workflows.
+The [AI Overview Scraper](https://cloro.dev/ai-ooverview/) by cloro enables developers to programmatically interact with Google's AI Overview and automatically collect comprehensive search result analysis and AI-curated insights along with structured metadata. Instead of manual data collection, you can retrieve results as parsed JSON, raw HTML, or other formats for seamless integration into your workflows.
 
 You can use cloro's AI Overview Scraper for search result monitoring, trend analysis, and comprehensive topic overviews. It handles dynamic AI-generated content, supports real-time extraction, and eliminates the need to manage authentication, sessions, or anti-bot systems.
 
@@ -199,7 +199,7 @@ AI Overview excels at comprehensive topic overviews, market research queries, in
 For detailed documentation, advanced features, and integration guides, visit:
 
 - **API documentation:** [docs.cloro.dev](https://docs.cloro.dev)
-- **AI Overview scraper page:** [cloro.dev/aioverview](https://cloro.dev/aioverview/)
+- **AI Overview scraper page:** [cloro.dev/ai-overview](https://cloro.dev/ai-overview/)
 
 ## Contact us
 
