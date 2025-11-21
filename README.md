@@ -1,10 +1,10 @@
-# AI Overview Scraper
+# Google AI Overview Scraper
 
-[![AI Overview scraper by cloro](https://github.com/cloro-dev/google-ai-overview-scraper/blob/main/aioverview-scraper-hero-image.png)](https://cloro.dev/aiooverview/?utm_source=github)
+[![Google AI Overview scraper by cloro](https://github.com/cloro-dev/google-ai-overview-scraper/blob/main/aioverview-scraper-hero-image.png)](https://cloro.dev/aiooverview/?utm_source=github)
 
-[![cloro](https://img.shields.io/badge/Powered%20by-Cloro-blue?style=for-the-badge)](https://cloro.dev/)
+[![cloro](https://img.shields.io/badge/Powered%20by-cloro-blue?style=for-the-badge)](https://cloro.dev/)
 
-The [AI Overview Scraper](https://cloro.dev/ai-ooverview/) by cloro enables developers to programmatically interact with Google's AI Overview and automatically collect comprehensive search result analysis and AI-curated insights along with structured metadata. Instead of manual data collection, you can retrieve results as parsed JSON, raw HTML, or other formats for seamless integration into your workflows.
+The [Google AI Overview Scraper](https://cloro.dev/aiooverview/) by cloro enables developers to programmatically interact with Google's AI Overview and automatically collect comprehensive search result analysis and AI-curated insights along with structured metadata. Instead of manual data collection, you can retrieve results as parsed JSON, raw HTML, or other formats for seamless integration into your workflows.
 
 You can use cloro's AI Overview Scraper for search result monitoring, trend analysis, and comprehensive topic overviews. It handles dynamic AI-generated content, supports real-time extraction, and eliminates the need to manage authentication, sessions, or anti-bot systems.
 
@@ -92,6 +92,7 @@ axios
 | `prompt`\*         | The search query or topic for overview generation (1-10,000 characters)     | –             |
 | `country`          | Optional country/region code for localized results (e.g., `US`, `GB`, `DE`) | `US`          |
 | `include.markdown` | Include response in Markdown format when set to true                        | `false`       |
+| `include.html`     | Include URL to full HTML response when set to true (URL expires after 48h)  | `false`       |
 
 \* Mandatory parameters
 
@@ -122,7 +123,7 @@ The AI Overview Scraper API returns a structured JSON object containing AI Overv
         "description": "Latest developments in medical AI technology and their clinical applications..."
       }
     ],
-    "html": "<div>Artificial intelligence in healthcare has revolutionized patient care...</div>",
+    "html": "https://storage.cloro.dev/results/c45a5081-808d-4ed3-9c86-e4baf16c8ab8/page-1.html", // URL expires after 48 hours
     "markdown": "**Artificial intelligence in healthcare** has revolutionized patient care, diagnostics, and drug discovery..."
   }
 }
@@ -199,7 +200,16 @@ AI Overview excels at comprehensive topic overviews, market research queries, in
 For detailed documentation, advanced features, and integration guides, visit:
 
 - **API documentation:** [docs.cloro.dev](https://docs.cloro.dev)
-- **AI Overview scraper page:** [cloro.dev/ai-overview](https://cloro.dev/ai-overview/)
+- **AI Overview scraper page:** [cloro.dev/aioverview](https://cloro.dev/ai-overview/)
+
+## Other available scrapers
+
+- **[AI Mode](https://cloro.dev/ai-mode/)** - Extracts structured data from Google AI Mode for general knowledge queries, workflow optimization, and technical guidance.
+- **[AI Overview](https://cloro.dev/ai-overview/)** - Extracts structured data from Google AI Overview for comprehensive search result analysis and AI-curated insights.
+- **[ChatGPT](https://cloro.dev/chatgpt/)** - Extracts structured data from ChatGPT with advanced features including shopping cards, raw response data, and query fan-out.
+- **[Copilot](https://cloro.dev/copilot/)** - Extracts structured data from Microsoft Copilot for development tools, Microsoft ecosystem research, and enterprise-focused queries.
+- **[Google](https://cloro.dev/google-search/)** - Extracts structured data from Google Search results, including organic results, People Also Ask questions, related searches, and optional AI Overview data.
+- **[Perplexity](https://cloro.dev/perplexity/)** - Extracts comprehensive structured data from Perplexity AI with real-time web sources, automatically detecting and extracting rich data objects.
 
 ## Contact us
 
@@ -207,4 +217,4 @@ If you have questions or need support, reach out to us on [our contact page](htt
 
 ---
 
-_Built with ❤️ by the cloro team_
+Built with ❤️ by the cloro team
