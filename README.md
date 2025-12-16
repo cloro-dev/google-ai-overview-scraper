@@ -123,6 +123,17 @@ The AI Overview Scraper API returns a structured JSON object containing AI Overv
         "description": "Latest developments in medical AI technology and their clinical applications..."
       }
     ],
+    "videos": [
+      {
+        "url": "https://www.youtube.com/watch?v=example123",
+        "title": "AI in Healthcare: Latest Innovations",
+        "thumbnail": "https://example.com/thumb.jpg",
+        "source": "HealthTech Channel",
+        "platform": "YouTube",
+        "date": "2 days ago",
+        "duration": "12:34"
+      }
+    ],
     "html": "https://storage.cloro.dev/results/c45a5081-808d-4ed3-9c86-e4baf16c8ab8/page-1.html", // URL expires after 48 hours
     "markdown": "**Artificial intelligence in healthcare** has revolutionized patient care, diagnostics, and drug discovery..."
   }
@@ -140,7 +151,8 @@ Google AI Overview provides comprehensive search result analysis with AI-curated
 - **Multi-source analysis**: AI-powered analysis that combines insights from various authoritative sources
 - **Structured insights**: Well-organized information that breaks down complex topics into understandable components
 - **Search result curation**: Intelligent selection and presentation of the most relevant search results
-
+- **Video content extraction**: Automatic extraction of relevant videos with metadata including thumbnails, duration, and source information
+  
 ### Sources array structure
 
 Each source in the `result.sources` array contains:
@@ -151,6 +163,20 @@ Each source in the `result.sources` array contains:
 | `url`         | string  | Direct URL to the source content              |
 | `label`       | string  | Source name or publication                    |
 | `description` | string  | Brief description of what the source contains |
+
+### Videos array structure
+
+When videos are present in the AI Overview, the `result.videos` array contains extracted video information:
+
+| Field       | Type   | Description                           |
+| ----------- | ------ | ------------------------------------- |
+| `url`       | string | Direct video URL (e.g., YouTube link) |
+| `title`     | string | Video title                           |
+| `thumbnail` | string | Thumbnail image URL                   |
+| `source`    | string | Channel or source name                |
+| `platform`  | string | Video platform (e.g., YouTube)        |
+| `date`      | string | Upload date (e.g., "2 days ago")      |
+| `duration`  | string | Video duration (e.g., "12:34")        |
 
 ## Practical AI Overview scraper use cases
 
