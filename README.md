@@ -4,9 +4,9 @@
 
 [![cloro](https://img.shields.io/badge/Powered%20by-cloro-blue?style=for-the-badge)](https://cloro.dev/)
 
-The [Google AI Overview Scraper](https://cloro.dev/ai-overview/) by cloro enables developers to programmatically interact with Google's AI Overview and automatically collect comprehensive search result analysis and AI-curated insights along with structured metadata. Instead of manual data collection, you can retrieve results as parsed JSON, raw HTML, or other formats for seamless integration into your workflows.
+The [Google AI Overview Scraper](https://cloro.dev/ai-overview/) by cloro lets developers programmatically interact with Google's AI Overview and collect search result analysis and AI-curated insights with structured metadata. You can retrieve results as parsed JSON, raw HTML, or other formats for integration into your workflows.
 
-You can use cloro's AI Overview Scraper for search result monitoring, trend analysis, and comprehensive topic overviews. It handles dynamic AI-generated content, supports real-time extraction, and eliminates the need to manage authentication, sessions, or anti-bot systems.
+You can use cloro's AI Overview Scraper for search result monitoring, trend analysis, and topic overviews. It handles dynamic AI-generated content, supports real-time extraction, and removes the need to manage authentication, sessions, or anti-bot systems.
 
 ## How it works
 
@@ -108,13 +108,13 @@ The AI Overview Scraper API returns a structured JSON object containing AI Overv
 {
   "success": true,
   "result": {
-    "text": "Artificial intelligence in healthcare has revolutionized patient care, diagnostics, and drug discovery in 2025. Key developments include AI-powered diagnostic tools with 95% accuracy, personalized treatment plans, and robotic surgery assistance...",
+    "text": "Artificial intelligence in healthcare has changed patient care, diagnostics, and drug discovery in 2025. Key developments include AI diagnostic tools with 95% accuracy, personalized treatment plans, and robotic surgery assistance...",
     "sources": [
       {
         "position": 1,
         "url": "https://example.com/healthcare-ai-report",
         "label": "Healthcare AI Institute",
-        "description": "Comprehensive analysis of AI applications in healthcare and medical innovation..."
+        "description": "Analysis of AI applications in healthcare and medical innovation..."
       },
       {
         "position": 2,
@@ -134,23 +134,23 @@ The AI Overview Scraper API returns a structured JSON object containing AI Overv
         "duration": "12:34"
       }
     ],
-    "html": "https://storage.cloro.dev/results/c45a5081-808d-4ed3-9c86-e4baf16c8ab8/page-1.html", // URL expires after 24 hours
-    "markdown": "**Artificial intelligence in healthcare** has revolutionized patient care, diagnostics, and drug discovery..."
+    "html": ["https://storage.cloro.dev/results/c45a5081-808d-4ed3-9c86-e4baf16c8ab8/page-1.html"], // each URL is one rendered SERP page; expires after 24 hours
+    "markdown": "**Artificial intelligence in healthcare** has changed patient care, diagnostics, and drug discovery...[Healthcare AI Institute](https://example.com/healthcare-ai-report)[Medical Technology Journal](https://example.com/medical-tech-trends)"
   }
 }
 ```
 
 ## Comprehensive search analysis
 
-Google AI Overview provides comprehensive search result analysis with AI-curated insights and synthesized information from multiple sources.
+Google AI Overview provides search result analysis with AI-curated insights and information synthesized from multiple sources.
 
 ### AI Overview features
 
-- **Topic synthesis**: Comprehensive overviews that synthesize information from multiple sources
-- **Current developments**: Integration of recent research and developments in the queried field
-- **Multi-source analysis**: AI-powered analysis that combines insights from various authoritative sources
-- **Structured insights**: Well-organized information that breaks down complex topics into understandable components
-- **Search result curation**: Intelligent selection and presentation of the most relevant search results
+- **Topic synthesis**: Overviews that synthesize information from multiple sources
+- **Current developments**: Recent research and developments in the queried field
+- **Multi-source analysis**: AI analysis that combines insights from various authoritative sources
+- **Structured insights**: Information organized into understandable components
+- **Search result curation**: Selection and presentation of relevant search results
 - **Video content extraction**: Automatic extraction of relevant videos with metadata including thumbnails, duration, and source information
 
 ### Sources array structure
@@ -178,21 +178,38 @@ When videos are present in the AI Overview, the `result.videos` array contains e
 | `date`      | string | Upload date (e.g., "2 days ago")      |
 | `duration`  | string | Video duration (e.g., "12:34")        |
 
+> Only `url` is guaranteed. Every other field is best-effort: Google does not attach every piece of metadata to every video card, and `thumbnail` and `duration` in particular are only available when Google renders the rich carousel preview (roughly 60% and 15% of videos in practice). Check for field presence before reading.
+
+### Ads array structure
+
+When Google injects sponsored ads inside the AI Overview, the `result.ads` array contains both text ads and shopping/product ads:
+
+| Field         | Type    | Description                                      |
+| ------------- | ------- | ------------------------------------------------ |
+| `position`    | integer | Position of the ad (1-indexed)                   |
+| `title`       | string  | Ad title                                         |
+| `url`         | string  | Ad destination URL                               |
+| `domain`      | string  | Domain name of the advertiser                    |
+| `description` | string  | Ad description text                              |
+| `price`       | object  | Product price for shopping ads (`{ value, currency }`) |
+| `oldPrice`    | object  | Original price before discount (`{ value, currency, raw }`) |
+| `store`       | string  | Retailer name for shopping ads                   |
+
 ## Practical AI Overview scraper use cases
 
-1. **Market research:** Generate comprehensive overviews of markets, industries, or topics for business intelligence.
-2. **Executive summaries:** Create detailed summaries for leadership and decision makers.
+1. **Market research:** Generate overviews of markets, industries, or topics for business intelligence.
+2. **Executive summaries:** Create summaries for leadership and decision makers.
 3. **Research synthesis:** Combine information from multiple sources into coherent overviews.
 4. **Competitive analysis:** Get AI-curated insights on competitive landscapes and industry dynamics.
-5. **Educational content:** Produce comprehensive educational materials and topic explanations.
-6. **Strategic planning:** Inform strategic decisions with comprehensive topic analysis and insights.
+5. **Educational content:** Produce educational materials and topic explanations.
+6. **Strategic planning:** Inform strategic decisions with topic analysis and insights.
 
 ## Why choose cloro?
 
-- **Simple integration:** Clean API design with comprehensive documentation and examples.
+- **Simple integration:** Clean API design with documentation and examples.
 - **Reliable performance:** >99% uptime and low latencies (P50 < 30s, P90 < 60s)
 - **No infrastructure hassle:** We handle rate limiting and browser management.
-- **Comprehensive analysis:** Access to AI Overview's synthesized insights and multi-source analysis.
+- **Synthesized analysis:** Access to AI Overview's synthesized insights and multi-source analysis.
 - **Developer support:** Responsive support team to help with integration and troubleshooting.
 
 ## FAQ
@@ -203,11 +220,11 @@ Any website is legal to be scraped as long as the information is publicly access
 
 ### What makes cloro's AI Overview scraper unique?
 
-cloro's AI Overview endpoint provides reliable access to Google's AI Overview with:
+cloro's AI Overview endpoint provides access to Google's AI Overview with:
 
-- **Comprehensive topic synthesis** from multiple authoritative sources
-- **AI-curated insights** for enhanced understanding and analysis
-- **Structured data extraction** for seamless integration into your workflows
+- **Topic synthesis** from multiple authoritative sources
+- **AI-curated insights** for understanding and analysis
+- **Structured data extraction** for direct integration into your workflows
 
 ### What's the recommended timeout for requests?
 
@@ -219,13 +236,13 @@ Yes, you can specify country codes like `US`, `GB`, `DE`, `JP`, `CN`, `IN`, `BR`
 
 ### What kind of queries work best with AI Overview?
 
-AI Overview excels at comprehensive topic overviews, market research queries, industry analysis, and any request that would benefit from synthesized information from multiple sources.
+AI Overview handles topic overviews, market research queries, industry analysis, and requests that benefit from synthesized information from multiple sources.
 
 ## Learn more
 
 For detailed documentation, advanced features, and integration guides, visit:
 
-- **API documentation:** [docs.cloro.dev](https://docs.cloro.dev/)
+- **API documentation:** [cloro.dev/docs](https://cloro.dev/docs/)
 - **AI Overview scraper page:** [cloro.dev/ai-overview](https://cloro.dev/ai-overview/)
 
 ## Other available scrapers
