@@ -1,282 +1,129 @@
-# Google AI Overview Scraper API — Track Citations, Sources & Rankings
+# Google AI Overview Scraper
 
-[![Google AI Overview scraper by cloro](https://github.com/cloro-dev/google-ai-overview-scraper/blob/main/aioverview-scraper-hero-image.png)](https://cloro.dev/ai-overview/?utm_source=github)
+[![Google AI Overview Scraper by cloro](https://github.com/cloro-dev/google-ai-overview-scraper/blob/main/aioverview-scraper-hero-image.png)](https://cloro.dev/ai-overview/?utm_source=github)
 
 [![cloro](https://img.shields.io/badge/Powered%20by-cloro-blue?style=for-the-badge)](https://cloro.dev/)
 
-Scrape Google's AI Overview panel via API. Returns parsed JSON with the full AIO text and markdown, **citation pills** with source URLs, ranking position, and AIO panel presence signals per query. Python, cURL, and Node.js examples below.
+The [Google AI Overview scraper](https://cloro.dev/ai-overview/?utm_source=github) by cloro returns the AI Overview block as structured JSON: the answer text and markdown, every cited source with position, and the organic results alongside it for comparison.
 
-Built for developers doing SEO monitoring under AI Overviews, tracking which sources Google cites in AIO panels, GEO/answer-engine-optimization research, and click-loss analysis when AIO appears — without managing CAPTCHAs, rotating proxies, session state, or Google's anti-bot defenses.
-
-## Quick start
+## How do you scrape Google AI Overview?
 
 1. Get an API key at [cloro.dev](https://cloro.dev/?utm_source=github&utm_medium=readme).
-2. Send a request:
+2. POST a query to `https://api.cloro.dev/v1/monitor/google`.
+3. Read the parsed fields from the JSON response.
 
-   ```bash
-   curl -X POST https://api.cloro.dev/v1/monitor/aioverview \
-     -H "Authorization: Bearer YOUR_API_KEY" \
-     -H "Content-Type: application/json" \
-     -d '{"prompt": "how does typescript inference work"}'
-   ```
-
-3. Parse the returned JSON — `result.text`, `result.markdown`, `result.citationPills[]`, `result.aioPresent`.
-
-Full examples in Python, cURL, and Node.js below.
-
-## How it works
-
-The AI Overview scraper handles the rendering, parsing, and delivery of results in your requested format. You provide your search query, API credentials, and optional parameters as shown below.
+AI Overview is returned by the Google Search endpoint with `include.aioverview`, in the same response as the organic results, so you can compare what ranks against what gets cited in one request. The two diverge sharply: citations from top-10 organic pages fell from 76% to 38% over the period Ahrefs measured across 4 million URLs.
 
 ### Request sample (Python)
 
 ```python
-import json
 import requests
 
-# API parameters
 payload = {
-    'prompt': 'Overview of artificial intelligence in healthcare 2025',
+    'query': 'what is a serp api',
     'country': 'US',
-    'include': {
-        'markdown': True
-    }
+    'include': {'aioverview': True},
 }
 
-# Get a response
 response = requests.post(
-    'https://api.cloro.dev/v1/monitor/aioverview',
+    'https://api.cloro.dev/v1/monitor/google',
     headers={'Authorization': 'Bearer YOUR_API_KEY'},
-    json=payload
+    json=payload,
 )
 
-# Print response to stdout
 print(response.json())
-
-# Save response to a JSON file
-with open('response.json', 'w') as file:
-    json.dump(response.json(), file, indent=2)
 ```
 
 ### Request sample (cURL)
 
 ```bash
-curl -X POST https://api.cloro.dev/v1/monitor/aioverview \
+curl -X POST https://api.cloro.dev/v1/monitor/google \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{
-    "prompt": "Overview of artificial intelligence in healthcare 2025",
-    "country": "US",
-    "include": {
-      "markdown": true
-    }
-  }'
+  -d '{"query": "what is a serp api", "country": "US", "include": {"aioverview": true}}'
 ```
 
-### Request sample (Node.js)
-
-```javascript
-const axios = require("axios");
-
-const payload = {
-  prompt: "Overview of artificial intelligence in healthcare 2025",
-  country: "US",
-  include: {
-    markdown: true,
-  },
-};
-
-axios
-  .post("https://api.cloro.dev/v1/monitor/aioverview", payload, {
-    headers: {
-      Authorization: "Bearer YOUR_API_KEY",
-      "Content-Type": "application/json",
-    },
-  })
-  .then((response) => {
-    console.log(response.data);
-  })
-  .catch((error) => {
-    console.error("Error:", error);
-  });
-```
+Node.js and async/webhook examples are in the [endpoint documentation](https://cloro.dev/docs/api-reference/endpoint/monitor-google).
 
 ### Request parameters
 
-| Parameter          | Description                                                                 | Default value |
-| ------------------ | --------------------------------------------------------------------------- | ------------- |
-| `prompt`\*         | The search query or topic for overview generation (1-10,000 characters)     | –             |
-| `country`          | Optional country/region code for localized results (e.g., `US`, `GB`, `DE`) | `US`          |
-| `include.markdown` | Include response in Markdown format when set to true                        | `false`       |
-| `include.html`     | Include URL to full HTML response when set to true (URL expires after 24h)  | `false`       |
+| Parameter | Description | Default |
+| --- | --- | --- |
+| `query`\* | The search query | – |
+| `country` | Country code for localized results (`US`, `GB`, `DE`) | `US` |
+| `location` | [Google canonical location name](https://developers.google.com/google-ads/api/reference/data/geotargets) for geo-targeting. Mutually exclusive with `uule` | – |
+| `uule` | Pre-encoded Google UULE string. Mutually exclusive with `location` | – |
+| `device` | `desktop` or `mobile` | `desktop` |
+| `pages` | Number of result pages to return | `1` |
+| `include.aioverview`\* | Include the AI Overview block | `false` |
+| `include.aioverview.markdown` | Return the Overview as Markdown | `false` |
+| `include.paaAioverview` | Include AI Overviews inside People Also Ask | `false` |
+| `include.html` | Return a URL to the full HTML (expires after 24h) | `false` |
 
-\* Mandatory parameters
+\* Required
 
----
-
-### Output samples
-
-The AI Overview Scraper API returns a structured JSON object containing AI Overview's comprehensive summary and metadata.
-
-**Structured JSON output snippet:**
+## What data does the Google AI Overview scraper return?
 
 ```json
 {
   "success": true,
   "result": {
-    "text": "Artificial intelligence in healthcare has changed patient care, diagnostics, and drug discovery in 2025. Key developments include AI diagnostic tools with 95% accuracy, personalized treatment plans, and robotic surgery assistance...",
-    "sources": [
-      {
-        "position": 1,
-        "url": "https://example.com/healthcare-ai-report",
-        "label": "Healthcare AI Institute",
-        "description": "Analysis of AI applications in healthcare and medical innovation..."
-      },
-      {
-        "position": 2,
-        "url": "https://example.com/medical-tech-trends",
-        "label": "Medical Technology Journal",
-        "description": "Latest developments in medical AI technology and their clinical applications..."
-      }
-    ],
-    "videos": [
-      {
-        "url": "https://www.youtube.com/watch?v=example123",
-        "title": "AI in Healthcare: Latest Innovations",
-        "thumbnail": "https://example.com/thumb.jpg",
-        "source": "HealthTech Channel",
-        "platform": "YouTube",
-        "date": "2 days ago",
-        "duration": "12:34"
-      }
-    ],
-    "html": ["https://storage.cloro.dev/results/c45a5081-808d-4ed3-9c86-e4baf16c8ab8/page-1.html"], // each URL is one rendered SERP page; expires after 24 hours
-    "markdown": "**Artificial intelligence in healthcare** has changed patient care, diagnostics, and drug discovery...[Healthcare AI Institute](https://example.com/healthcare-ai-report)[Medical Technology Journal](https://example.com/medical-tech-trends)"
+    "aioverview": {
+      "text": "A SERP API returns search engine results as structured data...",
+      "markdown": "A **SERP API** returns search engine results...",
+      "sources": [
+        { "position": 1, "url": "https://example.com/serp-api", "title": "What is a SERP API", "domain": "example.com" }
+      ]
+    },
+    "organicResults": [
+      { "position": 1, "title": "SERP API guide", "url": "https://example.com/guide", "domain": "example.com" }
+    ]
   }
 }
 ```
 
-## Comprehensive search analysis
+1. **`aioverview.text`** and **`aioverview.markdown`** — the Overview answer.
+2. **`aioverview.sources`** — every cited URL with position, title and domain. This is the field that matters for GEO work.
+3. **`organicResults`** — returned in the same response, so you can measure the gap between ranking and citation on the same query.
 
-Google AI Overview provides search result analysis with AI-curated insights and information synthesized from multiple sources.
+A missing Overview and an unparsed Overview look identical if you only check for an empty field, so capture ground truth by hand on a sample before trusting a trend line built from this endpoint.
 
-### AI Overview features
+Full field-level schemas are in the [endpoint reference](https://cloro.dev/docs/api-reference/endpoint/monitor-google).
 
-- **Topic synthesis**: Overviews that synthesize information from multiple sources
-- **Current developments**: Recent research and developments in the queried field
-- **Multi-source analysis**: AI analysis that combines insights from various authoritative sources
-- **Structured insights**: Information organized into understandable components
-- **Search result curation**: Selection and presentation of relevant search results
-- **Video content extraction**: Automatic extraction of relevant videos with metadata including thumbnails, duration, and source information
+## Use cases
 
-### Sources array structure
-
-Each source in the `result.sources` array contains:
-
-| Field         | Type    | Description                                   |
-| ------------- | ------- | --------------------------------------------- |
-| `position`    | integer | Position order of the source in the response  |
-| `url`         | string  | Direct URL to the source content              |
-| `label`       | string  | Source name or publication                    |
-| `description` | string  | Brief description of what the source contains |
-
-### Videos array structure
-
-When videos are present in the AI Overview, the `result.videos` array contains extracted video information:
-
-| Field       | Type   | Description                           |
-| ----------- | ------ | ------------------------------------- |
-| `url`       | string | Direct video URL (e.g., YouTube link) |
-| `title`     | string | Video title                           |
-| `thumbnail` | string | Thumbnail image URL                   |
-| `source`    | string | Channel or source name                |
-| `platform`  | string | Video platform (e.g., YouTube)        |
-| `date`      | string | Upload date (e.g., "2 days ago")      |
-| `duration`  | string | Video duration (e.g., "12:34")        |
-
-> Only `url` is guaranteed. Every other field is best-effort: Google does not attach every piece of metadata to every video card, and `thumbnail` and `duration` in particular are only available when Google renders the rich carousel preview (roughly 60% and 15% of videos in practice). Check for field presence before reading.
-
-### Ads array structure
-
-When Google injects sponsored ads inside the AI Overview, the `result.ads` array contains both text ads and shopping/product ads:
-
-| Field         | Type    | Description                                      |
-| ------------- | ------- | ------------------------------------------------ |
-| `position`    | integer | Position of the ad (1-indexed)                   |
-| `title`       | string  | Ad title                                         |
-| `url`         | string  | Ad destination URL                               |
-| `domain`      | string  | Domain name of the advertiser                    |
-| `description` | string  | Ad description text                              |
-| `price`       | object  | Product price for shopping ads (`{ value, currency }`) |
-| `oldPrice`    | object  | Original price before discount (`{ value, currency, raw }`) |
-| `store`       | string  | Retailer name for shopping ads                   |
-
-## Practical AI Overview scraper use cases
-
-1. **Market research:** Generate overviews of markets, industries, or topics for business intelligence.
-2. **Executive summaries:** Create summaries for leadership and decision makers.
-3. **Research synthesis:** Combine information from multiple sources into coherent overviews.
-4. **Competitive analysis:** Get AI-curated insights on competitive landscapes and industry dynamics.
-5. **Educational content:** Produce educational materials and topic explanations.
-6. **Strategic planning:** Inform strategic decisions with topic analysis and insights.
-
-## Why choose cloro?
-
-- **Simple integration:** Clean API design with documentation and examples.
-- **Reliable performance:** >99% uptime and low latencies (P50 < 30s, P90 < 60s)
-- **No infrastructure hassle:** We handle rate limiting and browser management.
-- **Synthesized analysis:** Access to AI Overview's synthesized insights and multi-source analysis.
-- **Developer support:** Responsive support team to help with integration and troubleshooting.
+- **Citation tracking** — whether your domain is cited in the Overview, and at what position.
+- **Rank-versus-citation analysis** — the same response carries both, so the gap is measurable directly.
+- **Trigger-rate research** — how often an Overview fires for a query class, which varies enormously by intent.
+- **Competitive monitoring** — which domains Google's Overview trusts on your category's questions.
 
 ## FAQ
 
-### Is scraping AI Overview allowed?
+### How is AI Overview different from AI Mode?
 
-Any website is legal to be scraped as long as the information is publicly accessible.
+Different content systems on the same SERP. Measured across 1.3 million AI Mode citations, the two cite the same URLs only 13.7% of the time. Use the [AI Mode scraper](https://cloro.dev/ai-mode/) for that surface.
 
-### What makes cloro's AI Overview scraper unique?
+### Does an AI Overview appear on every query?
 
-cloro's AI Overview endpoint provides access to Google's AI Overview with:
+No, and the rate varies sharply by intent rather than averaging out. Commercial and question-shaped queries trigger it far more often than navigational ones.
 
-- **Topic synthesis** from multiple authoritative sources
-- **AI-curated insights** for understanding and analysis
-- **Structured data extraction** for direct integration into your workflows
+### Can I get AI Overviews inside People Also Ask?
 
-### What's the recommended timeout for requests?
+Yes, via `include.paaAioverview`.
 
-We don't recommend putting any timeout, given that our system retries automatically. We recommend setting up a retry mechanism in case of failure.
+### Why do my Overview counts differ between runs?
 
-### Does the API support different countries?
-
-Yes, you can specify country codes like `US`, `GB`, `DE`, `JP`, `CN`, `IN`, `BR` and more to get localized results relevant to specific regions.
-
-### What kind of queries work best with AI Overview?
-
-AI Overview handles topic overviews, market research queries, industry analysis, and requests that benefit from synthesized information from multiple sources.
+Overviews are not deterministic, and a parser miss is indistinguishable from an absent Overview in the response alone. Sample by hand periodically to separate the two.
 
 ## Learn more
 
-For detailed documentation, advanced features, and integration guides, visit:
+- **Endpoint reference:** [cloro.dev/docs](https://cloro.dev/docs/api-reference/endpoint/monitor-google)
+- **Product page:** [cloro.dev/ai-overview](https://cloro.dev/ai-overview/)
 
-- **API documentation:** [cloro.dev/docs](https://cloro.dev/docs/)
-- **AI Overview scraper page:** [cloro.dev/ai-overview](https://cloro.dev/ai-overview/)
+## Other cloro scrapers
 
-## Other available scrapers
-
-- **[AI Mode](https://cloro.dev/ai-mode/)** - Extracts structured data from Google AI Mode for general knowledge queries, workflow optimization, and technical guidance.
-- **[AI Overview](https://cloro.dev/ai-overview/)** - Extracts structured data from Google AI Overview for comprehensive search result analysis and AI-curated insights.
-- **[ChatGPT](https://cloro.dev/chatgpt/)** - Extracts structured data from ChatGPT with advanced features including shopping cards, raw response data, and query fan-out.
-- **[Copilot](https://cloro.dev/copilot/)** - Extracts structured data from Microsoft Copilot for development tools, Microsoft ecosystem research, and enterprise-focused queries.
-- **[Gemini](https://cloro.dev/gemini/)** - Extracts structured data from Google Gemini for complex reasoning, content generation, and source confidence scoring.
-- **[Google Search](https://cloro.dev/google-search/)** - Extracts structured data from Google Search results, including organic results, People Also Ask questions, related searches, and optional AI Overview data.
-- **[Google News](https://cloro.dev/google-news/)** - Extracts structured news articles from Google News with titles, snippets, sources, dates, and thumbnail images for news monitoring and media tracking.
-- **[Grok](https://cloro.dev/grok/)** - Extracts structured data from Grok for current events, news tracking, and real-time information gathering.
-- **[Perplexity](https://cloro.dev/perplexity/)** - Extracts comprehensive structured data from Perplexity AI with real-time web sources, automatically detecting and extracting rich data objects.
+[AI Mode](https://cloro.dev/ai-mode/) · [ChatGPT](https://cloro.dev/chatgpt/) · [Copilot](https://cloro.dev/copilot/) · [Gemini](https://cloro.dev/gemini/) · [Google Search](https://cloro.dev/google-search/) · [Google News](https://cloro.dev/google-news/) · [Grok](https://cloro.dev/grok/) · [Perplexity](https://cloro.dev/perplexity/)
 
 ## Contact us
 
-If you have questions or need support, join our community at [r/cloroapi](https://www.reddit.com/r/cloroapi/).
-
----
-
-Built with ❤️ by the cloro team
+Questions or support: [r/cloroapi](https://www.reddit.com/r/cloroapi/).
