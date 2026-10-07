@@ -22,7 +22,7 @@ import requests
 payload = {
     'query': 'what is a serp api',
     'country': 'US',
-    'include': {'aioverview': True},
+    'include': {'aioverview': {'markdown': True}},
 }
 
 response = requests.post(
@@ -40,7 +40,7 @@ print(response.json())
 curl -X POST https://api.cloro.dev/v1/monitor/google \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"query": "what is a serp api", "country": "US", "include": {"aioverview": true}}'
+  -d '{"query": "what is a serp api", "country": "US", "include": {"aioverview": {"markdown": true}}}'
 ```
 
 Node.js and async/webhook examples are in the [endpoint documentation](https://cloro.dev/docs/api-reference/endpoint/monitor-google).
@@ -50,15 +50,14 @@ Node.js and async/webhook examples are in the [endpoint documentation](https://c
 | Parameter | Description | Default |
 | --- | --- | --- |
 | `query`\* | The search query | – |
-| `country` | Country code for localized results (`US`, `GB`, `DE`) | `US` |
+| `country`\* | Country code for localized results (`US`, `GB`, `DE`). Required unless you send `gl` | – |
 | `location` | [Google canonical location name](https://developers.google.com/google-ads/api/reference/data/geotargets) for geo-targeting. Mutually exclusive with `uule` | – |
 | `uule` | Pre-encoded Google UULE string. Mutually exclusive with `location` | – |
-| `device` | `desktop` or `mobile` | `desktop` |
+| `device` | `desktop`, `mobile`, `ios` or `android` | `desktop` |
 | `pages` | Number of result pages to return | `1` |
-| `include.aioverview`\* | Include the AI Overview block | `false` |
-| `include.aioverview.markdown` | Return the Overview as Markdown | `false` |
+| `include.aioverview` | Send `{"markdown": true}` to get the AI Overview block, with Markdown | – |
 | `include.paaAioverview` | Include AI Overviews inside People Also Ask | `false` |
-| `include.html` | Return a URL to the full HTML (expires after 24h) | `false` |
+| `include.html` | Return URLs to the full HTML, one per page (expire after 24h) | `false` |
 
 \* Required
 
@@ -72,23 +71,21 @@ Node.js and async/webhook examples are in the [endpoint documentation](https://c
       "text": "A SERP API returns search engine results as structured data...",
       "markdown": "A **SERP API** returns search engine results...",
       "sources": [
-        { "position": 1, "url": "https://example.com/serp-api", "title": "What is a SERP API", "domain": "example.com" }
+        { "position": 1, "url": "https://example.com/serp-api", "label": "What is a SERP API", "description": "A SERP API returns search results as JSON..." }
       ]
     },
     "organicResults": [
-      { "position": 1, "title": "SERP API guide", "url": "https://example.com/guide", "domain": "example.com" }
+      { "position": 1, "title": "SERP API guide", "link": "https://example.com/guide", "snippet": "How SERP APIs work..." }
     ]
   }
 }
 ```
 
 1. **`aioverview.text`** and **`aioverview.markdown`** — the Overview answer.
-2. **`aioverview.sources`** — every cited URL with position, title and domain. This is the field that matters for GEO work.
+2. **`aioverview.sources`** — every cited URL with position, label and description. This is the field that matters for GEO work.
 3. **`organicResults`** — returned in the same response, so you can measure the gap between ranking and citation on the same query.
 
-A missing Overview and an unparsed Overview look identical if you only check for an empty field, so capture ground truth by hand on a sample before trusting a trend line built from this endpoint.
-
-Full field-level schemas are in the [endpoint reference](https://cloro.dev/docs/api-reference/endpoint/monitor-google).
+Full field-level schemas are in the [AI Overview reference](https://cloro.dev/docs/api-reference/endpoint/google/ai-overview).
 
 ## Use cases
 
@@ -105,7 +102,7 @@ Different content systems on the same SERP. Measured across 1.3 million AI Mode 
 
 ### Does an AI Overview appear on every query?
 
-No, and the rate varies sharply by intent rather than averaging out. Commercial and question-shaped queries trigger it far more often than navigational ones.
+No, and the rate varies sharply by intent rather than averaging out. Commercial and question-shaped queries trigger it far more often than navigational ones, and `GET /v1/countries?model=aioverview` lists the countries where Google offers it. When Google shows none, including in a country it doesn't serve, the response is a 200 with no `aioverview` key, and the [AI Overview add-on](https://cloro.dev/docs/guides/providers#google-search-multi-page-pricing) is still charged.
 
 ### Can I get AI Overviews inside People Also Ask?
 
@@ -113,11 +110,11 @@ Yes, via `include.paaAioverview`.
 
 ### Why do my Overview counts differ between runs?
 
-Overviews are not deterministic, and a parser miss is indistinguishable from an absent Overview in the response alone. Sample by hand periodically to separate the two.
+Overviews are not deterministic, and a parser miss looks the same as an absent Overview: in both cases the `aioverview` key is missing. Sample by hand periodically to separate the two before trusting a trend line.
 
 ## Learn more
 
-- **Endpoint reference:** [cloro.dev/docs](https://cloro.dev/docs/api-reference/endpoint/monitor-google)
+- **Endpoint reference:** [cloro.dev/docs](https://cloro.dev/docs/api-reference/endpoint/google/ai-overview)
 - **Product page:** [cloro.dev/ai-overview](https://cloro.dev/ai-overview/)
 
 ## Other cloro scrapers
@@ -126,4 +123,4 @@ Overviews are not deterministic, and a parser miss is indistinguishable from an 
 
 ## Contact us
 
-Questions or support: [r/cloroapi](https://www.reddit.com/r/cloroapi/).
+Questions or support: [ask the docs AI assistant](https://cloro.dev/docs/?assistant).
