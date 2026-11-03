@@ -4,7 +4,7 @@
 
 [![cloro](https://img.shields.io/badge/Powered%20by-cloro-blue?style=for-the-badge)](https://cloro.dev/)
 
-The [Google AI Overview scraper](https://cloro.dev/ai-overview/?utm_source=github) by cloro returns the AI Overview block as structured JSON: the answer text and markdown, every cited source with position, and the organic results alongside it for comparison.
+The [Google AI Overview scraper](https://cloro.dev/ai-overview/?utm_source=github) by cloro is an API that extracts Google AI Overview content and its citations as structured JSON: the answer text and markdown, every cited source with position, label and description, and the organic results alongside it for comparison. You run no browser, no proxies and no HTML parser.
 
 ## How do you scrape Google AI Overview?
 
@@ -61,7 +61,7 @@ Node.js and async/webhook examples are in the [endpoint documentation](https://c
 
 \* Required
 
-## What data does the Google AI Overview scraper return?
+## How do you extract Google AI Overview citations as structured JSON?
 
 ```json
 {
@@ -81,18 +81,26 @@ Node.js and async/webhook examples are in the [endpoint documentation](https://c
 }
 ```
 
-1. **`aioverview.text`** and **`aioverview.markdown`** — the Overview answer.
-2. **`aioverview.sources`** — every cited URL with position, label and description. This is the field that matters for GEO work.
-3. **`organicResults`** — returned in the same response, so you can measure the gap between ranking and citation on the same query.
+1. **`aioverview.text`** and **`aioverview.markdown`**: the Overview answer.
+2. **`aioverview.sources`**: every cited URL with position, label and description. This is the field that matters for GEO work.
+3. **`organicResults`**: returned in the same response, so you can measure the gap between ranking and citation on the same query.
 
 Full field-level schemas are in the [AI Overview reference](https://cloro.dev/docs/api-reference/endpoint/google/ai-overview).
 
+## How do you extract Google AI Overview at scale, by keyword and location?
+
+Send each keyword as an async task, up to 500 in one [batch request](https://cloro.dev/docs/api-reference/endpoint/create-batch-tasks), and take the results on a webhook. cloro runs them up to your plan's concurrency limit and makes up to 5 attempts on each. You do not run proxies yourself: each request routes through region-specific infrastructure for the `country` you set. For one keyword in one city, add `location`:
+
+```json
+{"query": "best serp api", "country": "US", "location": "New York,New York,United States", "include": {"aioverview": {"markdown": true}}}
+```
+
 ## Use cases
 
-- **Citation tracking** — whether your domain is cited in the Overview, and at what position.
-- **Rank-versus-citation analysis** — the same response carries both, so the gap is measurable directly.
-- **Trigger-rate research** — how often an Overview fires for a query class, which varies enormously by intent.
-- **Competitive monitoring** — which domains Google's Overview trusts on your category's questions.
+- **Citation tracking**: whether your domain is cited in the Overview, and at what position.
+- **Rank-versus-citation analysis**: the same response carries both, so the gap is measurable directly.
+- **Trigger-rate research**: how often an Overview fires for a query class, which varies enormously by intent.
+- **Competitive monitoring**: which domains Google's Overview trusts on your category's questions.
 
 ## FAQ
 
