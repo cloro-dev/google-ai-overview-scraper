@@ -127,7 +127,7 @@ Overviews are not deterministic, and a parser miss looks the same as an absent O
 
 ## Other cloro scrapers
 
-[AI Mode](https://cloro.dev/ai-mode/) · [ChatGPT](https://cloro.dev/chatgpt/) · [Copilot](https://cloro.dev/copilot/) · [Gemini](https://cloro.dev/gemini/) · [Google Search](https://cloro.dev/google-search/) · [Google News](https://cloro.dev/google-news/) · [Perplexity](https://cloro.dev/perplexity/)
+[AI Mode](https://cloro.dev/ai-mode/) · [ChatGPT](https://cloro.dev/chatgpt/) · [Gemini](https://cloro.dev/gemini/) · [Google Search](https://cloro.dev/google-search/) · [Google News](https://cloro.dev/google-news/)
 
 ## Contact us
 
